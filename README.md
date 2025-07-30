@@ -2,30 +2,30 @@
 
 A comprehensive business intelligence platform that demonstrates enterprise-grade privacy protections while enabling powerful customer analytics.
 
-## 🎯 Features
+## Features
 
-### 🔒 Privacy & Security
+###  Privacy & Security
 - **Differential Privacy** for customer data analysis
 - **PII Detection & Masking** automatic sensitive data protection
 - **Role-Based Access Control** (RBAC) for data access
 - **Audit Logging** for compliance tracking
 - **GDPR/CCPA Compliance** built-in regulatory adherence
 
-### 📊 Analytics Capabilities
+### Analytics Capabilities
 - **Customer Behavior Analysis** without exposing PII
 - **Trend Detection** using privacy-preserving algorithms
 - **Real-time Dashboards** with live data updates
 - **Custom Reports** with privacy budget tracking
 - **Data Lineage** for compliance reporting
 
-### 🛠 Technical Stack
+### Technical Stack
 - **Backend:** Python FastAPI, PostgreSQL
 - **Frontend:** React.js, Chart.js, Material-UI
 - **Privacy:** diffprivlib, pyDP
 - **Security:** JWT, OAuth2, encryption
 - **Deployment:** Docker, Render.com
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Local Development
 ```bash
@@ -50,13 +50,13 @@ python main.py
 docker-compose up --build
 ```
 
-## 📊 Live Demo
+## Live Demo
 
 **Dashboard:** https://privacy-analytics.onrender.com/dashboard
 **API Docs:** https://privacy-analytics.onrender.com/docs
 **Health Check:** https://privacy-analytics.onrender.com/health
 
-## 🔒 Privacy Features
+## Privacy Features
 
 ### Differential Privacy
 - Customer analytics with mathematical privacy guarantees
@@ -73,7 +73,7 @@ docker-compose up --build
 - Audit trail for all data access
 - Compliance reporting for regulatory requirements
 
-## 📈 Business Value
+## Business Value
 
 ### Compliance
 - **GDPR Compliance** for EU customer data
@@ -120,7 +120,7 @@ PORT=8000
 ENVIRONMENT=production
 ```
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Analytics
 - `GET /api/analytics/customers` - Privacy-preserving customer insights
@@ -136,7 +136,7 @@ ENVIRONMENT=production
 - `GET /health` - Service health check
 - `GET /docs` - API documentation
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run privacy tests
@@ -146,14 +146,14 @@ python -m pytest tests/test_privacy.py
 python -m pytest tests/
 ```
 
-## 📈 Performance
+## Performance
 
 - **Response Time:** < 200ms for privacy-preserving queries
 - **Privacy Budget:** Configurable per user/query
 - **Scalability:** Horizontal scaling with Docker
 - **Security:** End-to-end encryption
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -161,11 +161,11 @@ python -m pytest tests/
 4. Ensure privacy compliance
 5. Submit a pull request
 
-## 📄 License
+## License
 
 MIT License - see LICENSE file for details
 
-## 🔗 Related Projects
+## Related Projects
 
 - [Real-Time Anomaly Detection](https://github.com/kkalu-stack/anomaly-detection-system)
 - [Business Intelligence Platform](https://github.com/kkalu-stack/bi-platform) - Coming Soon
