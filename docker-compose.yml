@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  privacy-analytics:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://privacy_user:secure_password@postgres:5432/privacy_analytics
+      - SECRET_KEY=your-secret-key-change-in-production
+      - JWT_SECRET=your-jwt-secret-change-in-production
+      - PRIVACY_BUDGET=1.0
+      - DIFFERENTIAL_PRIVACY_EPSILON=0.1
+      - PORT=8000
+      - ENVIRONMENT=development
+    depends_on:
+      - postgres
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=privacy_analytics
+      - POSTGRES_USER=privacy_user
+      - POSTGRES_PASSWORD=secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data: 
