@@ -57,74 +57,112 @@ users_db = {
     }
 }
 
-# Simulated customer data with PII
-customer_data = [
-    {
-        "customer_id": "CUST001",
-        "name": "John Smith",
-        "email": "john.smith@email.com",
-        "phone": "555-0123",
-        "age": 35,
-        "income": 75000,
-        "purchase_frequency": 12,
-        "avg_order_value": 150.50,
-        "last_purchase": "2024-01-15",
-        "region": "North",
-        "product_category": "Electronics"
-    },
-    {
-        "customer_id": "CUST002",
-        "name": "Sarah Johnson",
-        "email": "sarah.j@email.com",
-        "phone": "555-0124",
-        "age": 28,
-        "income": 65000,
-        "purchase_frequency": 8,
-        "avg_order_value": 89.75,
-        "last_purchase": "2024-01-10",
-        "region": "South",
-        "product_category": "Clothing"
-    },
-    {
-        "customer_id": "CUST003",
-        "name": "Michael Brown",
-        "email": "michael.b@email.com",
-        "phone": "555-0125",
-        "age": 42,
-        "income": 95000,
-        "purchase_frequency": 15,
-        "avg_order_value": 225.00,
-        "last_purchase": "2024-01-20",
-        "region": "West",
-        "product_category": "Home & Garden"
-    },
-    {
-        "customer_id": "CUST004",
-        "name": "Emily Davis",
-        "email": "emily.d@email.com",
-        "phone": "555-0126",
-        "age": 31,
-        "income": 72000,
-        "purchase_frequency": 6,
-        "avg_order_value": 75.25,
-        "last_purchase": "2024-01-05",
-        "region": "East",
-        "product_category": "Books"
-    },
-    {
-        "customer_id": "CUST005",
-        "name": "David Wilson",
-        "email": "david.w@email.com",
-        "phone": "555-0127",
-        "age": 38,
-        "income": 88000,
-        "purchase_frequency": 18,
-        "avg_order_value": 180.00,
-        "last_purchase": "2024-01-18",
-        "region": "North",
-        "product_category": "Sports"
-    }
-]
+# Import database models
+from database.models import Customer, get_db, create_tables, initialize_sample_data
+
+# Initialize database on startup
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database and sample data on startup"""
+    try:
+        create_tables()
+        initialize_sample_data()
+        print("Database initialized successfully")
+    except Exception as e:
+        print(f"Database initialization error: {e}")
+
+# Get customer data from database
+def get_customer_data():
+    """Get customer data from PostgreSQL database"""
+    try:
+        db = next(get_db())
+        customers = db.query(Customer).all()
+        return [
+            {
+                "customer_id": c.customer_id,
+                "name": c.name,
+                "email": c.email,
+                "phone": c.phone,
+                "age": c.age,
+                "income": c.income,
+                "purchase_frequency": c.purchase_frequency,
+                "avg_order_value": c.avg_order_value,
+                "last_purchase": c.last_purchase.isoformat() if c.last_purchase else None,
+                "region": c.region,
+                "product_category": c.product_category
+            }
+            for c in customers
+        ]
+    except Exception as e:
+        print(f"Database error: {e}")
+        # Fallback to simulated data if database fails
+        return [
+            {
+                "customer_id": "CUST001",
+                "name": "John Smith",
+                "email": "john.smith@email.com",
+                "phone": "555-0123",
+                "age": 35,
+                "income": 75000,
+                "purchase_frequency": 12,
+                "avg_order_value": 150.50,
+                "last_purchase": "2024-01-15",
+                "region": "North",
+                "product_category": "Electronics"
+            },
+            {
+                "customer_id": "CUST002",
+                "name": "Sarah Johnson",
+                "email": "sarah.j@email.com",
+                "phone": "555-0124",
+                "age": 28,
+                "income": 65000,
+                "purchase_frequency": 8,
+                "avg_order_value": 89.75,
+                "last_purchase": "2024-01-10",
+                "region": "South",
+                "product_category": "Clothing"
+            },
+            {
+                "customer_id": "CUST003",
+                "name": "Michael Brown",
+                "email": "michael.b@email.com",
+                "phone": "555-0125",
+                "age": 42,
+                "income": 95000,
+                "purchase_frequency": 15,
+                "avg_order_value": 225.00,
+                "last_purchase": "2024-01-20",
+                "region": "West",
+                "product_category": "Home & Garden"
+            },
+            {
+                "customer_id": "CUST004",
+                "name": "Emily Davis",
+                "email": "emily.d@email.com",
+                "phone": "555-0126",
+                "age": 31,
+                "income": 72000,
+                "purchase_frequency": 6,
+                "avg_order_value": 75.25,
+                "last_purchase": "2024-01-05",
+                "region": "East",
+                "product_category": "Books"
+            },
+            {
+                "customer_id": "CUST005",
+                "name": "David Wilson",
+                "email": "david.w@email.com",
+                "phone": "555-0127",
+                "age": 38,
+                "income": 88000,
+                "purchase_frequency": 18,
+                "avg_order_value": 180.00,
+                "last_purchase": "2024-01-18",
+                "region": "North",
+                "product_category": "Sports"
+            }
+        ]
 
 # Audit log
 audit_log = []
@@ -271,6 +309,9 @@ async def login_for_access_token(username: str, password: str):
 async def get_customer_analytics():
     """Get privacy-preserving customer analytics"""
     
+    # Get customer data from database
+    customer_data = get_customer_data()
+    
     # Apply differential privacy to sensitive metrics
     total_customers = len(customer_data)
     avg_income = np.mean([c["income"] for c in customer_data])
@@ -312,6 +353,9 @@ async def get_customer_analytics():
 @app.get("/api/analytics/trends")
 async def get_trend_analytics():
     """Get privacy-preserving trend analysis"""
+    
+    # Get customer data from database
+    customer_data = get_customer_data()
     
     # Simulate trend data
     categories = ["Electronics", "Clothing", "Home & Garden", "Books", "Sports"]
