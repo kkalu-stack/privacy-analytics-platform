@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 # Database configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://privacy_user:secure_password@localhost/privacy_analytics")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_Yqx3GHQDpar5@ep-old-frog-af9kg2l7-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
 
 # Create engine
 engine = create_engine(DATABASE_URL)

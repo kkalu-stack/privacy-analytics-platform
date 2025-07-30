@@ -34,6 +34,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
+# Database configuration
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_Yqx3GHQDpar5@ep-old-frog-af9kg2l7-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
+
 # Privacy configuration
 PRIVACY_BUDGET = float(os.getenv("PRIVACY_BUDGET", "1.0"))
 DIFFERENTIAL_PRIVACY_EPSILON = float(os.getenv("DIFFERENTIAL_PRIVACY_EPSILON", "0.1"))
