@@ -267,8 +267,8 @@ async def login_for_access_token(username: str, password: str):
     log_audit_entry(user.username, "LOGIN", "SYSTEM", 0.0)
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/api/analytics/customers", dependencies=[Depends(get_current_user)])
-async def get_customer_analytics(current_user: User = Depends(get_current_user)):
+@app.get("/api/analytics/customers")
+async def get_customer_analytics():
     """Get privacy-preserving customer analytics"""
     
     # Apply differential privacy to sensitive metrics
@@ -298,7 +298,7 @@ async def get_customer_analytics(current_user: User = Depends(get_current_user))
             "avg_income": apply_differential_privacy(data["total_income"] / data["count"])
         }
     
-    log_audit_entry(current_user.username, "ANALYTICS_ACCESS", "CUSTOMER_DATA", 0.1)
+    log_audit_entry("demo_user", "ANALYTICS_ACCESS", "CUSTOMER_DATA", 0.1)
     
     return {
         "total_customers": round(private_total_customers, 2),
@@ -309,8 +309,8 @@ async def get_customer_analytics(current_user: User = Depends(get_current_user))
         "privacy_guarantees": "Differential privacy applied to all metrics"
     }
 
-@app.get("/api/analytics/trends", dependencies=[Depends(get_current_user)])
-async def get_trend_analytics(current_user: User = Depends(get_current_user)):
+@app.get("/api/analytics/trends")
+async def get_trend_analytics():
     """Get privacy-preserving trend analysis"""
     
     # Simulate trend data
@@ -346,7 +346,7 @@ async def get_trend_analytics(current_user: User = Depends(get_current_user)):
     for group, count in age_groups.items():
         private_age_groups[group] = apply_differential_privacy(count)
     
-    log_audit_entry(current_user.username, "TREND_ANALYSIS", "CUSTOMER_DATA", 0.15)
+    log_audit_entry("demo_user", "TREND_ANALYSIS", "CUSTOMER_DATA", 0.15)
     
     return {
         "category_performance": private_category_sales,
