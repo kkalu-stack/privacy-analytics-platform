@@ -14,6 +14,9 @@ import numpy as np
 from diffprivlib.models import LogisticRegression
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+from database.models import Customer, AuditLog, PrivacyBudget, User, create_tables, initialize_sample_data
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -65,11 +68,16 @@ from database.models import Customer, get_db, create_tables, initialize_sample_d
 async def startup_event():
     """Initialize database and sample data on startup"""
     try:
+        print("Starting database initialization...")
         create_tables()
+        print("Tables created successfully")
         initialize_sample_data()
+        print("Sample data inserted successfully")
         print("Database initialized successfully")
     except Exception as e:
-        print(f"Database initialization error: {e}")
+        print(f"Database initialization failed: {str(e)}")
+        # Continue running the app even if DB fails
+        pass
 
 # Get customer data from database
 def get_customer_data():
@@ -431,6 +439,51 @@ async def get_compliance_status(current_user: User = Depends(get_current_user)):
         "privacy_budget_remaining": PRIVACY_BUDGET,
         "last_compliance_check": datetime.now().isoformat()
     }
+
+@app.get("/test-db")
+async def test_database():
+    """Test database connection and create tables if needed"""
+    try:
+        # Test database connection
+        engine = create_engine(DATABASE_URL)
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            result.fetchone()
+        
+        # Create tables
+        create_tables()
+        
+        # Initialize sample data
+        initialize_sample_data()
+        
+        return {
+            "status": "success",
+            "message": "Database connected and tables created successfully",
+            "tables_created": True,
+            "sample_data_inserted": True
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Database connection failed: {str(e)}",
+            "tables_created": False,
+            "sample_data_inserted": False
+        }
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on startup"""
+    try:
+        print("Starting database initialization...")
+        create_tables()
+        print("Tables created successfully")
+        initialize_sample_data()
+        print("Sample data inserted successfully")
+        print("Database initialized successfully")
+    except Exception as e:
+        print(f"Database initialization failed: {str(e)}")
+        # Continue running the app even if DB fails
+        pass
 
 @app.get("/dashboard")
 async def dashboard():
