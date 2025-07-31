@@ -815,7 +815,7 @@ async def dashboard():
                         }]
                     },
                     options: {
-                        responsive: false,
+                        responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
@@ -851,12 +851,16 @@ async def dashboard():
                         }]
                     },
                     options: {
-                        responsive: false,
+                        responsive: true,
                         maintainAspectRatio: false,
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                max: 5,
+                                max: function(context) {
+                                    const values = context.chart.data.datasets[0].data;
+                                    const max = Math.max(...values);
+                                    return Math.max(max * 1.2, 1); // Add 20% padding, minimum 1
+                                },
                                 ticks: {
                                     callback: function(value) {
                                         return '$' + (value * 1000).toLocaleString() + 'K';
