@@ -187,6 +187,8 @@ body {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  overflow: hidden;
+  min-height: 100vh;
 }
 
 .metrics-grid {
@@ -232,6 +234,7 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
+  overflow: hidden;
 }
 
 .chart-card {
@@ -240,6 +243,8 @@ body {
   padding: 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   height: 400px;
+  overflow: hidden;
+  position: relative;
 }
 
 .chart-title {
