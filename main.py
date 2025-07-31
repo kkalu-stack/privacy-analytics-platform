@@ -851,9 +851,6 @@ async def dashboard():
             
             // Load data on page load
             loadData();
-            
-            // Refresh data every 30 seconds
-            setInterval(loadData, 30000);
         </script>
     </body>
     </html>
