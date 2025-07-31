@@ -750,32 +750,25 @@ async def dashboard():
         
         <script>
             let regionalChart, categoryChart;
-            
             let isLoading = false;
             
             async function loadData() {
-                if (isLoading) return; // Prevent multiple simultaneous requests
+                if (isLoading) return;
                 isLoading = true;
                 
                 try {
-                    // Load customer analytics
                     const customerResponse = await fetch('/api/analytics/customers');
                     const customerData = await customerResponse.json();
                     
-                    // Load trend analytics
                     const trendResponse = await fetch('/api/analytics/trends');
                     const trendData = await trendResponse.json();
                     
-                    // Update metrics
                     document.getElementById('totalCustomers').textContent = customerData.total_customers;
                     document.getElementById('avgIncome').textContent = '$' + customerData.average_income.toLocaleString();
                     document.getElementById('purchaseFreq').textContent = customerData.average_purchase_frequency;
                     document.getElementById('privacyBudget').textContent = (1.0 - customerData.privacy_budget_used).toFixed(2);
                     
-                    // Update regional chart
                     updateRegionalChart(customerData.regional_breakdown);
-                    
-                    // Update category chart
                     updateCategoryChart(trendData.category_performance);
                     
                 } catch (error) {
@@ -876,7 +869,7 @@ async def dashboard():
                 });
             }
             
-            // Load data on page load only - NO AUTO REFRESH
+            // Load data once on page load - NO AUTO REFRESH
             loadData();
         </script>
     </body>
