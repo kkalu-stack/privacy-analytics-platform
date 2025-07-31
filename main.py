@@ -506,7 +506,7 @@ async def dashboard():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Privacy-Aware Data Analytics Platform</title>
+        <title>Privacy Analytics Platform - FIXED VERSION</title>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
             * {
