@@ -702,15 +702,15 @@ async def dashboard():
             <div class="charts-section">
                 <div class="chart-card">
                     <div class="chart-title">Regional Distribution <span class="privacy-badge">PRIVATE</span></div>
-                    <div style="position: relative; height: 300px; width: 100%; overflow: hidden;">
-                        <canvas id="regionalChart" style="max-height: 100%; max-width: 100%;"></canvas>
+                    <div style="width: 100%; height: 300px; position: relative;">
+                        <canvas id="regionalChart" width="400" height="300"></canvas>
                     </div>
                 </div>
                 
                 <div class="chart-card">
                     <div class="chart-title">Category Performance <span class="privacy-badge">PRIVATE</span></div>
-                    <div style="position: relative; height: 300px; width: 100%; overflow: hidden;">
-                        <canvas id="categoryChart" style="max-height: 100%; max-width: 100%;"></canvas>
+                    <div style="width: 100%; height: 300px; position: relative;">
+                        <canvas id="categoryChart" width="400" height="300"></canvas>
                     </div>
                 </div>
             </div>
@@ -811,23 +811,14 @@ async def dashboard():
                         }]
                     },
                     options: {
-                        responsive: true,
+                        responsive: false,
                         maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                top: 20,
-                                bottom: 20,
-                                left: 20,
-                                right: 20
-                            }
-                        },
                         plugins: {
                             legend: {
                                 position: 'bottom',
                                 labels: {
-                                    padding: 20,
-                                    usePointStyle: true,
-                                    maxTicksLimit: 4
+                                    padding: 10,
+                                    usePointStyle: true
                                 }
                             }
                         }
@@ -855,46 +846,22 @@ async def dashboard():
                         }]
                     },
                     options: {
-                        responsive: true,
+                        responsive: false,
                         maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                top: 20,
-                                bottom: 20,
-                                left: 20,
-                                right: 20
-                            }
-                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                max: function(context) {
-                                    const values = context.chart.data.datasets[0].data;
-                                    const max = Math.max(...values);
-                                    return Math.max(max * 1.1, 100); // Add 10% padding, minimum 100
-                                },
-                                min: 0,
+                                max: 5000,
                                 ticks: {
                                     callback: function(value) {
                                         return '$' + (value * 1000).toLocaleString() + 'K';
-                                    },
-                                    maxTicksLimit: 5
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    maxTicksLimit: 5
+                                    }
                                 }
                             }
                         },
                         plugins: {
                             legend: {
                                 display: false
-                            }
-                        },
-                        elements: {
-                            bar: {
-                                maxBarThickness: 50
                             }
                         }
                     }
