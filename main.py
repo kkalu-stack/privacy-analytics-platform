@@ -451,6 +451,10 @@ async def get_compliance_status(current_user: User = Depends(get_current_user)):
         "last_compliance_check": datetime.now().isoformat()
     }
 
+@app.get("/test-fixed")
+async def test_fixed():
+    return {"message": "FIXED VERSION DEPLOYED", "timestamp": datetime.now().isoformat()}
+
 @app.get("/test-db")
 async def test_database():
     """Test database connection and create tables if needed"""
