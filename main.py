@@ -694,15 +694,15 @@ async def dashboard():
             <div class="charts-section">
                 <div class="chart-card">
                     <div class="chart-title">Regional Distribution <span class="privacy-badge">PRIVATE</span></div>
-                    <div style="position: relative; height: 300px; width: 100%;">
-                        <canvas id="regionalChart"></canvas>
+                    <div style="position: relative; height: 300px; width: 100%; overflow: hidden;">
+                        <canvas id="regionalChart" style="max-height: 100%; max-width: 100%;"></canvas>
                     </div>
                 </div>
                 
                 <div class="chart-card">
                     <div class="chart-title">Category Performance <span class="privacy-badge">PRIVATE</span></div>
-                    <div style="position: relative; height: 300px; width: 100%;">
-                        <canvas id="categoryChart"></canvas>
+                    <div style="position: relative; height: 300px; width: 100%; overflow: hidden;">
+                        <canvas id="categoryChart" style="max-height: 100%; max-width: 100%;"></canvas>
                     </div>
                 </div>
             </div>
@@ -847,9 +847,19 @@ async def dashboard():
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                max: function(context) {
+                                    const max = Math.max(...context.chart.data.datasets[0].data);
+                                    return max * 1.2; // Add 20% padding
+                                },
                                 ticks: {
                                     callback: function(value) {
                                         return '$' + (value * 1000).toLocaleString() + 'K';
@@ -866,7 +876,7 @@ async def dashboard():
                 });
             }
             
-            // Load data on page load only
+            // Load data on page load only - NO AUTO REFRESH
             loadData();
         </script>
     </body>
