@@ -701,7 +701,10 @@ async def dashboard():
             </div>
             
             <div class="compliance-section">
-                <h2 style="margin-bottom: 20px; color: #555;">Compliance Status</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="color: #555;">Compliance Status</h2>
+                    <button onclick="loadData()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;">Refresh Data</button>
+                </div>
                 <div class="compliance-grid">
                     <div class="compliance-item">
                         <span class="compliance-icon">CHECK</span>
@@ -741,7 +744,12 @@ async def dashboard():
         <script>
             let regionalChart, categoryChart;
             
+            let isLoading = false;
+            
             async function loadData() {
+                if (isLoading) return; // Prevent multiple simultaneous requests
+                isLoading = true;
+                
                 try {
                     // Load customer analytics
                     const customerResponse = await fetch('/api/analytics/customers');
@@ -765,6 +773,8 @@ async def dashboard():
                     
                 } catch (error) {
                     console.error('Error loading data:', error);
+                } finally {
+                    isLoading = false;
                 }
             }
             
