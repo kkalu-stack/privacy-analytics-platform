@@ -225,8 +225,15 @@ def mask_pii(data: Dict) -> Dict:
 
 def apply_differential_privacy(value: float, epsilon: float = DIFFERENTIAL_PRIVACY_EPSILON) -> float:
     """Apply differential privacy noise to a value"""
-    noise = np.random.laplace(0, 1/epsilon)
-    return value + noise
+    # Add smaller noise for more reasonable values
+    noise = np.random.laplace(0, 0.1/epsilon)
+    result = value + noise
+    
+    # Ensure reasonable bounds for display
+    if value > 0:  # For positive values (like counts, sales)
+        return max(0, result)  # Don't go below 0
+    else:
+        return result
 
 def log_audit_entry(user: str, action: str, resource: str, privacy_budget_used: float = 0.0):
     """Log audit entry"""
