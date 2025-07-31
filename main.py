@@ -520,10 +520,10 @@ async def dashboard():
             }
             
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
                 min-height: 100vh;
-                color: #333;
+                color: #e0e0e0;
             }
             
             .container {
@@ -533,13 +533,15 @@ async def dashboard():
             }
             
             .header {
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                border-radius: 15px;
-                padding: 20px;
+                background: rgba(0, 255, 255, 0.1);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(0, 255, 255, 0.2);
+                border-radius: 20px;
+                padding: 25px;
                 margin-bottom: 30px;
                 text-align: center;
-                color: white;
+                color: #00ffff;
+                box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
             }
             
             .header h1 {
@@ -561,28 +563,32 @@ async def dashboard():
             }
             
             .metric-card {
-                background: rgba(255, 255, 255, 0.95);
+                background: rgba(16, 16, 35, 0.9);
+                border: 1px solid rgba(0, 255, 255, 0.3);
                 border-radius: 15px;
                 padding: 25px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-                transition: transform 0.3s ease;
+                box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+                transition: all 0.3s ease;
+                backdrop-filter: blur(10px);
             }
             
             .metric-card:hover {
                 transform: translateY(-5px);
+                border-color: rgba(0, 255, 255, 0.6);
+                box-shadow: 0 12px 40px rgba(0, 255, 255, 0.2);
             }
             
             .metric-title {
                 font-size: 1.1rem;
                 font-weight: 600;
-                color: #555;
+                color: #00ffff;
                 margin-bottom: 10px;
             }
             
             .metric-value {
                 font-size: 2rem;
                 font-weight: bold;
-                color: #667eea;
+                color: #ff6b6b;
                 margin-bottom: 5px;
             }
             
@@ -599,38 +605,43 @@ async def dashboard():
             }
             
             .chart-card {
-                background: rgba(255, 255, 255, 0.95);
+                background: rgba(16, 16, 35, 0.9);
+                border: 1px solid rgba(0, 255, 255, 0.3);
                 border-radius: 15px;
                 padding: 25px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
                 height: 400px;
                 overflow: hidden;
                 position: relative;
+                backdrop-filter: blur(10px);
             }
             
             .chart-title {
                 font-size: 1.3rem;
                 font-weight: 600;
-                color: #555;
+                color: #00ffff;
                 margin-bottom: 20px;
                 text-align: center;
             }
             
             .privacy-badge {
                 display: inline-block;
-                background: #4CAF50;
+                background: linear-gradient(135deg, #ff6b6b, #ee5a24);
                 color: white;
                 padding: 5px 12px;
                 border-radius: 20px;
                 font-size: 0.8rem;
                 margin-left: 10px;
+                box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
             }
             
             .compliance-section {
-                background: rgba(255, 255, 255, 0.95);
+                background: rgba(16, 16, 35, 0.9);
+                border: 1px solid rgba(0, 255, 255, 0.3);
                 border-radius: 15px;
                 padding: 25px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
             }
             
             .compliance-grid {
@@ -644,14 +655,15 @@ async def dashboard():
                 display: flex;
                 align-items: center;
                 padding: 15px;
-                background: #f8f9fa;
+                background: rgba(22, 22, 45, 0.8);
                 border-radius: 10px;
-                border-left: 4px solid #4CAF50;
+                border-left: 4px solid #00ffff;
+                border: 1px solid rgba(0, 255, 255, 0.2);
             }
             
             .compliance-icon {
                 margin-right: 10px;
-                color: #4CAF50;
+                color: #00ffff;
                 font-size: 1.2rem;
             }
             
@@ -673,8 +685,8 @@ async def dashboard():
     <body>
         <div class="container">
             <div class="header">
-                <h1>Privacy-Aware Data Analytics Platform</h1>
-                <p>Enterprise-grade analytics with built-in privacy protections</p>
+                <h1>🔒 Cyber Privacy Analytics Hub</h1>
+                <p>Advanced data protection with real-time privacy monitoring</p>
             </div>
             
             <div class="metrics-grid">
@@ -804,11 +816,11 @@ async def dashboard():
                         datasets: [{
                             data: Object.values(regionalData).map(r => r.customer_count),
                             backgroundColor: [
-                                '#667eea',
-                                '#764ba2',
-                                '#f093fb',
-                                '#f5576c',
-                                '#4facfe'
+                                '#00ffff',
+                                '#ff6b6b',
+                                '#4ecdc4',
+                                '#45b7d1',
+                                '#96ceb4'
                             ],
                             borderWidth: 2,
                             borderColor: '#fff'
@@ -844,8 +856,8 @@ async def dashboard():
                         datasets: [{
                             label: 'Sales Performance',
                             data: Object.values(categoryData),
-                            backgroundColor: '#667eea',
-                            borderColor: '#764ba2',
+                            backgroundColor: '#00ffff',
+                            borderColor: '#ff6b6b',
                             borderWidth: 2,
                             barThickness: 30
                         }]
