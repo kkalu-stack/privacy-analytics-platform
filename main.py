@@ -866,7 +866,7 @@ async def dashboard():
                 });
             }
             
-            // Load data on page load
+            // Load data on page load only
             loadData();
         </script>
     </body>
