@@ -659,6 +659,15 @@ async def dashboard():
                 border-radius: 10px;
                 border-left: 4px solid #00ffff;
                 border: 1px solid rgba(0, 255, 255, 0.2);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .compliance-item:hover {
+                background: rgba(0, 255, 255, 0.1);
+                border-color: rgba(0, 255, 255, 0.6);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
             }
             
             .compliance-icon {
@@ -737,36 +746,44 @@ async def dashboard():
                     <button onclick="loadData()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;">Refresh Data</button>
                 </div>
                 <div class="compliance-grid">
-                    <div class="compliance-item">
-                        <span class="compliance-icon">CHECK</span>
+                    <div class="compliance-item" onclick="showComplianceDetails('gdpr')">
+                        <span class="compliance-icon">🔒</span>
                         <div>
-                            <div style="font-weight: 600;">GDPR Compliance</div>
-                            <div style="font-size: 0.9rem; color: #666;">EU Data Protection</div>
+                            <div style="font-weight: 600; color: #00ffff;">GDPR Compliance</div>
+                            <div style="font-size: 0.9rem; color: #888;">EU Data Protection</div>
                         </div>
                     </div>
                     
-                    <div class="compliance-item">
-                        <span class="compliance-icon">CHECK</span>
+                    <div class="compliance-item" onclick="showComplianceDetails('ccpa')">
+                        <span class="compliance-icon">🛡️</span>
                         <div>
-                            <div style="font-weight: 600;">CCPA Compliance</div>
-                            <div style="font-size: 0.9rem; color: #666;">California Privacy</div>
+                            <div style="font-weight: 600; color: #00ffff;">CCPA Compliance</div>
+                            <div style="font-size: 0.9rem; color: #888;">California Privacy</div>
                         </div>
                     </div>
                     
-                    <div class="compliance-item">
-                        <span class="compliance-icon">CHECK</span>
+                    <div class="compliance-item" onclick="showComplianceDetails('encryption')">
+                        <span class="compliance-icon">🔐</span>
                         <div>
-                            <div style="font-weight: 600;">Data Encryption</div>
-                            <div style="font-size: 0.9rem; color: #666;">AES-256 Enabled</div>
+                            <div style="font-weight: 600; color: #00ffff;">Data Encryption</div>
+                            <div style="font-size: 0.9rem; color: #888;">AES-256 Enabled</div>
                         </div>
                     </div>
                     
-                    <div class="compliance-item">
-                        <span class="compliance-icon">CHECK</span>
+                    <div class="compliance-item" onclick="showComplianceDetails('audit')">
+                        <span class="compliance-icon">📋</span>
                         <div>
-                            <div style="font-weight: 600;">Audit Logging</div>
-                            <div style="font-size: 0.9rem; color: #666;">Full Access Trail</div>
+                            <div style="font-weight: 600; color: #00ffff;">Audit Logging</div>
+                            <div style="font-size: 0.9rem; color: #888;">Full Access Trail</div>
                         </div>
+                    </div>
+                </div>
+                
+                <div id="compliance-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+                    <div style="background: rgba(16, 16, 35, 0.95); border: 2px solid #00ffff; border-radius: 15px; padding: 30px; max-width: 500px; color: #e0e0e0; backdrop-filter: blur(20px);">
+                        <h3 id="modal-title" style="color: #00ffff; margin-bottom: 15px;"></h3>
+                        <p id="modal-content" style="line-height: 1.6; margin-bottom: 20px;"></p>
+                        <button onclick="closeComplianceModal()" style="background: #ff6b6b; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Close</button>
                     </div>
                 </div>
             </div>
@@ -891,6 +908,48 @@ async def dashboard():
             
             // Load data once on page load - NO AUTO REFRESH
             loadData();
+            
+            // Compliance modal functions
+            function showComplianceDetails(type) {
+                const modal = document.getElementById('compliance-modal');
+                const title = document.getElementById('modal-title');
+                const content = document.getElementById('modal-content');
+                
+                const details = {
+                    gdpr: {
+                        title: '🔒 GDPR Compliance',
+                        content: 'Full compliance with EU General Data Protection Regulation. Features include: data minimization, purpose limitation, consent management, right to be forgotten, data portability, and privacy by design. All customer data processing follows GDPR Article 6 legal basis with explicit consent mechanisms.'
+                    },
+                    ccpa: {
+                        title: '🛡️ CCPA Compliance',
+                        content: 'California Consumer Privacy Act compliance implemented. Provides consumers with: right to know what personal information is collected, right to delete personal information, right to opt-out of sale of personal information, and non-discrimination for exercising privacy rights.'
+                    },
+                    encryption: {
+                        title: '🔐 Data Encryption',
+                        content: 'AES-256 encryption at rest and in transit. All sensitive data is encrypted using industry-standard algorithms. Database connections use TLS 1.3, API communications are secured with HTTPS, and all PII is automatically masked in analytics outputs.'
+                    },
+                    audit: {
+                        title: '📋 Audit Logging',
+                        content: 'Comprehensive audit trail tracking all data access and modifications. Logs include: user identity, timestamp, action performed, data accessed, privacy budget consumed, and IP address. Audit logs are immutable and retained for 7 years for compliance purposes.'
+                    }
+                };
+                
+                title.textContent = details[type].title;
+                content.textContent = details[type].content;
+                modal.style.display = 'flex';
+            }
+            
+            function closeComplianceModal() {
+                document.getElementById('compliance-modal').style.display = 'none';
+            }
+            
+            // Close modal when clicking outside
+            document.addEventListener('click', function(event) {
+                const modal = document.getElementById('compliance-modal');
+                if (event.target === modal) {
+                    closeComplianceModal();
+                }
+            });
         </script>
     </body>
     </html>
