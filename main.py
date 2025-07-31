@@ -714,7 +714,7 @@ async def dashboard():
                 <div class="chart-card">
                     <div class="chart-title">Category Performance <span class="privacy-badge">PRIVATE</span></div>
                     <div style="width: 100%; height: 300px; position: relative;">
-                        <canvas id="categoryChart" width="400" height="300"></canvas>
+                        <canvas id="categoryChart" width="500" height="250"></canvas>
                     </div>
                 </div>
             </div>
@@ -846,7 +846,8 @@ async def dashboard():
                             data: Object.values(categoryData),
                             backgroundColor: '#667eea',
                             borderColor: '#764ba2',
-                            borderWidth: 1
+                            borderWidth: 2,
+                            barThickness: 30
                         }]
                     },
                     options: {
@@ -855,7 +856,7 @@ async def dashboard():
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                max: 5000,
+                                max: 5,
                                 ticks: {
                                     callback: function(value) {
                                         return '$' + (value * 1000).toLocaleString() + 'K';
