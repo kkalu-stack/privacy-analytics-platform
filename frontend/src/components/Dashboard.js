@@ -13,8 +13,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 30000); // Refresh every 30 seconds
-    return () => clearInterval(interval);
+    // No auto-refresh - load data once on mount
   }, []);
 
   const loadData = async () => {
