@@ -601,6 +601,7 @@ async def dashboard():
                 box-shadow: 0 8px 32px rgba(0,0,0,0.1);
                 height: 400px;
                 overflow: hidden;
+                position: relative;
             }
             
             .chart-title {
@@ -812,12 +813,21 @@ async def dashboard():
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 20,
+                                bottom: 20,
+                                left: 20,
+                                right: 20
+                            }
+                        },
                         plugins: {
                             legend: {
                                 position: 'bottom',
                                 labels: {
                                     padding: 20,
-                                    usePointStyle: true
+                                    usePointStyle: true,
+                                    maxTicksLimit: 4
                                 }
                             }
                         }
@@ -849,27 +859,42 @@ async def dashboard():
                         maintainAspectRatio: false,
                         layout: {
                             padding: {
-                                top: 10,
-                                bottom: 10
+                                top: 20,
+                                bottom: 20,
+                                left: 20,
+                                right: 20
                             }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
                                 max: function(context) {
-                                    const max = Math.max(...context.chart.data.datasets[0].data);
-                                    return max * 1.2; // Add 20% padding
+                                    const values = context.chart.data.datasets[0].data;
+                                    const max = Math.max(...values);
+                                    return Math.max(max * 1.1, 100); // Add 10% padding, minimum 100
                                 },
+                                min: 0,
                                 ticks: {
                                     callback: function(value) {
                                         return '$' + (value * 1000).toLocaleString() + 'K';
-                                    }
+                                    },
+                                    maxTicksLimit: 5
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    maxTicksLimit: 5
                                 }
                             }
                         },
                         plugins: {
                             legend: {
                                 display: false
+                            }
+                        },
+                        elements: {
+                            bar: {
+                                maxBarThickness: 50
                             }
                         }
                     }
