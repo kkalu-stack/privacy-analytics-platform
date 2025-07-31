@@ -592,6 +592,8 @@ async def dashboard():
                 border-radius: 15px;
                 padding: 25px;
                 box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                height: 400px;
+                overflow: hidden;
             }
             
             .chart-title {
@@ -692,12 +694,16 @@ async def dashboard():
             <div class="charts-section">
                 <div class="chart-card">
                     <div class="chart-title">Regional Distribution <span class="privacy-badge">PRIVATE</span></div>
-                    <canvas id="regionalChart"></canvas>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="regionalChart"></canvas>
+                    </div>
                 </div>
                 
                 <div class="chart-card">
                     <div class="chart-title">Category Performance <span class="privacy-badge">PRIVATE</span></div>
-                    <canvas id="categoryChart"></canvas>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
                 </div>
             </div>
             
