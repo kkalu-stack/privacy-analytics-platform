@@ -376,7 +376,8 @@ async def get_trend_analytics():
         category = customer["product_category"]
         if category not in category_sales:
             category_sales[category] = 0
-        category_sales[category] += customer["avg_order_value"] * customer["purchase_frequency"]
+        # Scale down the values to prevent chart overflow
+        category_sales[category] += (customer["avg_order_value"] * customer["purchase_frequency"]) / 1000
     
     # Apply differential privacy to sales data
     private_category_sales = {}
@@ -845,7 +846,7 @@ async def dashboard():
                                 beginAtZero: true,
                                 ticks: {
                                     callback: function(value) {
-                                        return '$' + value.toLocaleString();
+                                        return '$' + (value * 1000).toLocaleString() + 'K';
                                     }
                                 }
                             }
