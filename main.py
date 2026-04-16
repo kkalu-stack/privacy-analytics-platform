@@ -3,17 +3,13 @@ import json
 import random
 import hashlib
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional
-from fastapi import FastAPI, HTTPException, Depends, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import List, Dict
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import pandas as pd
 import numpy as np
 from diffprivlib.models import LogisticRegression
-from jose import JWTError, jwt
-from passlib.context import CryptContext
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from database.models import Customer, AuditLog, PrivacyBudget, User, create_tables, initialize_sample_data
@@ -25,43 +21,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Security configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-security = HTTPBearer()
-
 # Database configuration
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_Yqx3GHQDpar5@ep-old-frog-af9kg2l7-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
 
 # Privacy configuration
 PRIVACY_BUDGET = float(os.getenv("PRIVACY_BUDGET", "1.0"))
 DIFFERENTIAL_PRIVACY_EPSILON = float(os.getenv("DIFFERENTIAL_PRIVACY_EPSILON", "0.1"))
-
-# Simulated user database
-users_db = {
-    "admin": {
-        "username": "admin",
-        "hashed_password": pwd_context.hash("admin123"),
-        "role": "admin",
-        "full_name": "System Administrator"
-    },
-    "analyst": {
-        "username": "analyst",
-        "hashed_password": pwd_context.hash("analyst123"),
-        "role": "analyst",
-        "full_name": "Data Analyst"
-    },
-    "viewer": {
-        "username": "viewer",
-        "hashed_password": pwd_context.hash("viewer123"),
-        "role": "viewer",
-        "full_name": "Data Viewer"
-    }
-}
 
 # Import database models
 from database.models import Customer, get_db, create_tables, initialize_sample_data
@@ -179,22 +144,6 @@ def get_customer_data():
 audit_log = []
 
 # Pydantic models
-class User(BaseModel):
-    username: str
-    full_name: str
-    role: str
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
-
-class PrivacyBudget(BaseModel):
-    budget: float
-    epsilon: float
-
 class AuditEntry(BaseModel):
     timestamp: str
     user: str
@@ -246,53 +195,6 @@ def log_audit_entry(user: str, action: str, resource: str, privacy_budget_used: 
     }
     audit_log.append(entry)
 
-# Authentication functions
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_user(username: str):
-    if username in users_db:
-        user_dict = users_db[username]
-        return User(**user_dict)
-    return None
-
-def authenticate_user(username: str, password: str):
-    user = get_user(username)
-    if not user:
-        return False
-    if not verify_password(password, users_db[username]["hashed_password"]):
-        return False
-    return user
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
-    user = get_user(username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
-
 # API endpoints
 @app.get("/")
 async def root():
@@ -306,22 +208,6 @@ async def health_check():
         "privacy_budget_remaining": PRIVACY_BUDGET,
         "differential_privacy_epsilon": DIFFERENTIAL_PRIVACY_EPSILON
     }
-
-@app.post("/token", response_model=Token)
-async def login_for_access_token(username: str, password: str):
-    user = authenticate_user(username, password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    log_audit_entry(user.username, "LOGIN", "SYSTEM", 0.0)
-    return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/api/analytics/customers")
 async def get_customer_analytics():
@@ -422,25 +308,18 @@ async def get_trend_analytics():
         "privacy_guarantees": "Differential privacy applied to all demographic data"
     }
 
-@app.get("/api/privacy/audit", dependencies=[Depends(get_current_user)])
-async def get_audit_log(current_user: User = Depends(get_current_user)):
-    """Get audit log (admin only)"""
-    if current_user.role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin access required"
-        )
-    
+@app.get("/api/privacy/audit")
+async def get_audit_log():
+    """Get audit log"""
     return {
-        "audit_entries": audit_log[-50:],  # Last 50 entries
+        "audit_entries": audit_log[-50:],
         "total_entries": len(audit_log),
         "privacy_budget_remaining": PRIVACY_BUDGET
     }
 
-@app.get("/api/privacy/compliance", dependencies=[Depends(get_current_user)])
-async def get_compliance_status(current_user: User = Depends(get_current_user)):
+@app.get("/api/privacy/compliance")
+async def get_compliance_status():
     """Get compliance status"""
-    
     return {
         "gdpr_compliance": "COMPLIANT",
         "ccpa_compliance": "COMPLIANT",
