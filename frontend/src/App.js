@@ -51,37 +51,19 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {isAuthenticated && <Header user={user} onLogout={handleLogout} />}
+        <Header user={user} onLogout={isAuthenticated ? handleLogout : null} />
         <Routes>
-          <Route 
-            path="/login" 
-            element={
-              !isAuthenticated ? (
-                <Login onLogin={handleLogin} />
-              ) : (
-                <Navigate to="/dashboard" replace />
-              )
-            } 
+          <Route
+            path="/login"
+            element={<Navigate to="/dashboard" replace />}
           />
-          <Route 
-            path="/dashboard" 
-            element={
-              isAuthenticated ? (
-                <Dashboard />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            } 
+          <Route
+            path="/dashboard"
+            element={<Dashboard />}
           />
-          <Route 
-            path="/" 
-            element={
-              isAuthenticated ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            } 
+          <Route
+            path="/"
+            element={<Navigate to="/dashboard" replace />}
           />
         </Routes>
       </div>
